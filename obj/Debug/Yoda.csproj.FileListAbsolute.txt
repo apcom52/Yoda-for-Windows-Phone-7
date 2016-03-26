@@ -1,0 +1,26 @@
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\ApplicationIcon.png
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Background.png
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Yoda.dll
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Yoda.pdb
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\AppManifest.xaml
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Yoda.xap
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\obj\Debug\App.g.cs
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\obj\Debug\MainPage.g.cs
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\obj\Debug\Yoda.g.resources
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\obj\Debug\Yoda.dll
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\obj\Debug\Yoda.pdb
+c:\users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\obj\Debug\XapCacheFile.xml
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Microsoft.Phone.Controls.dll
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Microsoft.Phone.Controls.xml
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Assets\AppBar\appbar.back.rest.png
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Assets\AppBar\appbar.next.rest.png
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Assets\AppBar\appbar.upload.rest.png
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Newtonsoft.Json.dll
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\obj\Debug\Settings.g.cs
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Microsoft.Phone.Controls.Toolkit.dll
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Microsoft.Phone.Controls.Toolkit.pdb
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Microsoft.Phone.Controls.Toolkit.xml
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Assets\AppBar\appbar.calendar.rest.png
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Assets\AppBar\Planner-52.png
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Assets\AppBar\Planner-52 (1).png
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Assets\AppBar\folder.png
