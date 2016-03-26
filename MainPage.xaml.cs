@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.IO.IsolatedStorage;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using Newtonsoft.Json.Linq;
@@ -19,7 +20,10 @@ namespace Yoda
     public partial class MainPage : PhoneApplicationPage
     {
         DateTime targetDay = DateTime.Now;
+        DatePickerCustom datePicker;
         List<LessonItem> dayTimetable;
+        IsolatedStorageSettings settings;
+        const string GROUP = "GROUP";
 
         // Конструктор
         public MainPage()
@@ -27,6 +31,34 @@ namespace Yoda
             System.Diagnostics.Debug.WriteLine("Yay!");
             InitializeComponent();
             updateDateLabel(targetDay);
+
+            settings = IsolatedStorageSettings.ApplicationSettings;
+            if (!settings.Contains(GROUP)) {
+                settings.Add(GROUP, 1);
+                settings.Save();
+            }
+
+            Loaded += new RoutedEventHandler(MainPage_Loaded);
+        }
+
+        private void MainPage_Loaded(object sender, RoutedEventArgs e) {
+            if (this.datePicker == null) {
+                this.datePicker = new DatePickerCustom();
+                this.datePicker.IsTabStop = false;
+                this.datePicker.MaxHeight = 0;
+
+                this.datePicker.ValueChanged += new EventHandler<DateTimeValueChangedEventArgs>(datePicker_ValueChanged);
+
+                LayoutRoot.Children.Add(this.datePicker);
+
+            }
+        }
+
+        private void datePicker_ValueChanged(object sender, DateTimeValueChangedEventArgs e) {
+            //PageTitle.Text = this.datePicker.ValueString;
+            targetDay = (DateTime)e.NewDateTime;
+            updateDateLabel(targetDay);
+            loadDayTimetable(targetDay);
         }
 
         private void clickPrevDay(object sender, System.EventArgs e)
@@ -35,11 +67,12 @@ namespace Yoda
             //dayViewLabel.Text = "Previous";
             targetDay = targetDay.AddDays(-1);
             updateDateLabel(targetDay);
+            loadDayTimetable(targetDay);
         }
 
         private void clickChooseDate(object sender, System.EventArgs e)
         {
-        	//pass
+            this.datePicker.ClickButton();
         }
 
         private void clickNextDay(object sender, System.EventArgs e)
@@ -81,26 +114,13 @@ namespace Yoda
         private void loadDayTimetable(DateTime date)
         {
             String getDate = parseDate(date);
-            String url = "http://vsu-it.ru/api/timetable?day=" + getDate + "&group=2";
+            String url = "http://vsu-it.ru/api/timetable?day=" + getDate + "&group=" + settings[GROUP].ToString();
             System.Diagnostics.Debug.WriteLine(url);
 
             WebClient client = new WebClient();
             client.DownloadStringCompleted += new DownloadStringCompletedEventHandler(webClientFinished);
             Uri.EscapeUriString(url);
             client.DownloadStringAsync(new Uri(url));
-
-            /*List<LessonItem> lessons;
-            string jsonArrayAsString = json;
-            JArray jsonArray = JArray.Parse(jsonArrayAsString);
-            JToken jsonArray_Item = jsonArray.First;
-            while (jsonArray_Item != null) {
-                LessonItem current = new LessonItem();
-                current.title = jsonArray_Item.Value<string>("title");
-                current.time = jsonArray_Item.Value<string>("time");
-
-                lessons.Add(current);
-                jsonArray_Item = jsonArray_Item.Next;
-            }*/
         }
 
         private void webClientFinished(object sender, DownloadStringCompletedEventArgs e) {
@@ -111,6 +131,7 @@ namespace Yoda
                 string jsonArrayAsString = e.Result;
                 JArray jsonArray = JArray.Parse(jsonArrayAsString);
                 JToken jsonArray_Item = jsonArray.First;
+                int i = 0;
 
                 while (jsonArray_Item != null) {                    
                     LessonItem item = JsonConvert.DeserializeObject<LessonItem>(jsonArray_Item.ToString());
@@ -126,23 +147,26 @@ namespace Yoda
                             item.color = "#ED9595";
                             break;
                     }
+
+                    if (item.is_canceled) {
+                        item.canceled_visible = "Visible";
+                    }
+                    else {
+                        item.canceled_visible = "Collapsed";
+                    }
+
+                    if (item.homework != null) {
+                        item.homework_visible = "Visible";
+                    }
+                    else {
+                        item.homework_visible = "Collapsed";
+                    }
+
                     DayTimetableList.Items.Add(item);
 
-                    jsonArray_Item = jsonArray_Item.Next;                    
-                }
-
-                //DayTimetableList.ItemsSource = lessons;
-                /*while (jsonArray_Item != null) {
-                    LessonItem current = new LessonItem();
-                    current.title = jsonArray_Item.Value<string>("title");
-                    current.time = jsonArray_Item.Value<string>("time");
-                    current.place = jsonArray_Item.Value<string>("place");
-
-                    dayTimetable.Add(current);
                     jsonArray_Item = jsonArray_Item.Next;
-                }*/
-
-               // DayTimetableList.ItemsSource = dayTimetable;
+                    i++;
+                }
             }
             else {
                 MessageBox.Show(e.Error.Message);

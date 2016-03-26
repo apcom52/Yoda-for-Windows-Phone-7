@@ -24,3 +24,4 @@ C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Assets\
 C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Assets\AppBar\Planner-52.png
 C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Assets\AppBar\Planner-52 (1).png
 C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\Bin\Debug\Assets\AppBar\folder.png
+C:\Users\apcom\documents\visual studio 2012\Projects\Yoda\Yoda\obj\Debug\Yoda.csprojResolveAssemblyReference.cache

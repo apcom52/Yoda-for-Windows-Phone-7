@@ -35,11 +35,11 @@
             <controls:PivotItem Header="день" HorizontalAlignment="Right" Margin="0,28,-12,0" Width="480" x:Name="dayTab">				
             	<ScrollViewer Height="534" Width="480">            		
                     <StackPanel>
-                    	<tool:DatePicker x:Name="datePicker" Visibility="Collapsed" Header="Выбрать день"/>
+                    	<tool:DatePicker x:Name="datePickerField" Visibility="Collapsed" Header="Выбрать день"/>
                     	<ItemsControl x:Name="DayTimetableList" Width="480" HorizontalAlignment="Left" ItemsSource="{Binding Items}">
                     		<ItemsControl.ItemTemplate>
                     			<DataTemplate>
-                    				<Border BorderThickness="4,0,0,0" BorderBrush="{Binding color}">
+                    				<Border BorderThickness="8,0,0,0" BorderBrush="{Binding color}">
                     					<StackPanel Width="480" Margin="0 5">
                     						<tool:ContextMenuService.ContextMenu>
                     							<tool:ContextMenu>
@@ -52,14 +52,17 @@
                     						</tool:ContextMenuService.ContextMenu>
                     						<TextBlock Text="{Binding time}" FontSize="32" Foreground="{StaticResource PhoneAccentBrush}" Padding="10 10 0 0"/>
                     						<TextBlock Text="{Binding title}" FontSize="48" TextWrapping="Wrap" Margin="10 0" FontFamily="Segoe WP Semibold"/>
+                                            <TextBlock Text="ПАРА ОТМЕНЕНА" Foreground="Red" Margin="10 0" Visibility="{Binding canceled_visible}"></TextBlock>                                            
                     						<StackPanel Orientation="Horizontal" Margin="10 0">
                     							<TextBlock Text="{Binding type}" FontSize="24"/>
                     							<TextBlock Text=" в " FontSize="24" Foreground="#666666"/>
                     							<TextBlock Text="{Binding place}" FontSize="24"/>
                     							<TextBlock Text=" / " FontSize="24" Foreground="#666666"/>
-                    							<TextBlock Text="{Binding teacher}" FontSize="24"/>                                        
-                    						</StackPanel>                                    
-                    					</StackPanel>
+                    							<TextBlock Text="{Binding teacher}" FontSize="24"/>                                                  
+                    						</StackPanel>
+                                            <TextBlock Text="ДОМАШНЕЕ ЗАДАНИЕ" Foreground="{StaticResource PhoneAccentBrush}" FontSize="26" Padding="10 0" Visibility="{Binding homework_visible}"></TextBlock>
+                                            <TextBlock Text="{Binding homework}" Padding="10 0" Visibility="{Binding homework_visible}"></TextBlock>
+                                        </StackPanel>
                     				</Border>
                     			</DataTemplate>
                     		</ItemsControl.ItemTemplate>

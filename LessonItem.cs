@@ -29,5 +29,7 @@ namespace Yoda {
         public object control { get; set; }
         public bool is_canceled { get; set; }
         public string color { get; set; }
+        public string canceled_visible { get; set; }
+        public string homework_visible { get; set; }
     }
 }

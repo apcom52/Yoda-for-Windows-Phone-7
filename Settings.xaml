@@ -25,22 +25,25 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
             <TextBlock Text="Настройки" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Расписание" VerticalAlignment="Top">
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Расписание" VerticalAlignment="Top" FontSize="24">
             	<TextBlock.Foreground>
             		<SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
             	</TextBlock.Foreground>
             </TextBlock>
-            <StackPanel Margin="0,0,12,0" Height="282">
-            	<tool:ToggleSwitch Header="Показывать уведомления"/>
+            <StackPanel Margin="0,0,12,0">
+            	<tool:ListPicker x:Name="settingsGroup" Margin="0" Header="Подгруппа" Tap="settingsGroup_Tap">
+            		<tool:ListPickerItem Content="Первая подгруппа"/>
+            		<tool:ListPickerItem Content="Вторая подгруппа"/>
+            	</tool:ListPicker>
+            	<tool:ToggleSwitch Header="Показывать уведомления" IsChecked="True" Margin="0,5,0,0"/>
             	<CheckBox Content="Скрывать отмененные пары" Height="75" Margin="0,0,-10,0"/>
-            	<tool:DatePicker x:Name="datePicker" Value="2/3/2010"/>
             </StackPanel>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="О приложении" VerticalAlignment="Top">
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="О приложении" VerticalAlignment="Top" FontSize="24">
             	<TextBlock.Foreground>
             		<SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
             	</TextBlock.Foreground>
             </TextBlock>
-            <StackPanel HorizontalAlignment="Left" Height="143" VerticalAlignment="Top" Width="456" Orientation="Horizontal">
+            <StackPanel HorizontalAlignment="Left" Height="143" VerticalAlignment="Top" Width="456" Orientation="Horizontal" Margin="0,10,0,0">
             	<Image HorizontalAlignment="Left" Height="80" VerticalAlignment="Top" Width="80" Source="YodaLogo.png"/>
             	<StackPanel Width="378">
             		<TextBlock TextWrapping="Wrap" FontSize="29.333" FontFamily="Segoe WP Light" Margin="14,0,0,0" Height="48">
@@ -48,7 +51,7 @@
             			<LineBreak/>
             			<Run/>
             		</TextBlock>
-            		<TextBlock TextWrapping="Wrap" Text="1.0 beta" HorizontalAlignment="Right" Width="364"/>
+            		<TextBlock TextWrapping="Wrap" Text="Версия: 1.0" HorizontalAlignment="Right" Width="364"/>
             	</StackPanel>
             </StackPanel>
             <HyperlinkButton Content="Исходный код" HorizontalAlignment="Left" VerticalAlignment="Top"/>
