@@ -9,7 +9,6 @@
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls" 
     xmlns:tool="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     shell:SystemTray.IsVisible="True"
-    shell:SystemTray.BackgroundColor="{StaticResource PhoneAccentColor}"
     shell:SystemTray.ForegroundColor="White"
     x:Class="Yoda.MainPage"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
@@ -18,10 +17,16 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait" Background="{x:Null}"
     >
+    
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator x:Name="indicator" IsVisible="True"></shell:ProgressIndicator>
+    </shell:SystemTray.ProgressIndicator>
+    
 	<phone:PhoneApplicationPage.ApplicationBar>
 		<shell:ApplicationBar>
 			<shell:ApplicationBarIconButton x:Name="prevDate" IconUri="/Assets/AppBar/appbar.back.rest.png" Text="Пред. день" Click="clickPrevDay"/>
 			<shell:ApplicationBarIconButton x:Name="chooseDate" IconUri="/Assets/AppBar/folder.png" Text="Выбрать" Click="clickChooseDate" IsEnabled="True"/>
+			<shell:ApplicationBarIconButton x:Name="refreshButton" IconUri="/Assets/AppBar/appbar.refresh.rest.png" Text="обновить" Click="onRefreshButton"/>
 			<shell:ApplicationBarIconButton x:Name="nextDay" IconUri="/Assets/AppBar/appbar.next.rest.png" Text="след. день" Click="clickNextDay"/>
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="Открыть сайт" Click="openWebsite"></shell:ApplicationBarMenuItem>
@@ -35,19 +40,29 @@
             <controls:PivotItem Header="день" HorizontalAlignment="Right" Margin="0,28,-12,0" Width="480" x:Name="dayTab">				
             	<ScrollViewer Height="534" Width="480">            		
                     <StackPanel>
-                    	<tool:DatePicker x:Name="datePickerField" Visibility="Collapsed" Header="Выбрать день"/>
+						<StackPanel Orientation="Horizontal" x:Name="holiday" Visibility="Collapsed">
+                            <Image Source="star.png" Visibility="{StaticResource PhoneDarkThemeVisibility}" Margin="14,0,0,0"></Image>
+                            <Image Source="star2.png" Visibility="{StaticResource PhoneLightThemeVisibility}" Margin="14,0,0,0"></Image>
+							<StackPanel Margin="28,0,0,0">
+								<TextBlock FontSize="54" FontFamily="Segoe WP Light">
+									<TextBlock.Foreground>
+										<SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
+									</TextBlock.Foreground>Выходной</TextBlock>
+								<Button Click="clickHolidayNextDay">Следующий день</Button>
+							</StackPanel>
+						</StackPanel>	                    	
                     	<ItemsControl x:Name="DayTimetableList" Width="480" HorizontalAlignment="Left" ItemsSource="{Binding Items}">
                     		<ItemsControl.ItemTemplate>
-                    			<DataTemplate>
+                                <DataTemplate>
                     				<Border BorderThickness="8,0,0,0" BorderBrush="{Binding color}">
-                    					<StackPanel Width="480" Margin="0 5">
+                                        <StackPanel Width="480" Margin="0 5">
                     						<tool:ContextMenuService.ContextMenu>
                     							<tool:ContextMenu>
-                    								<tool:MenuItem Header="Добавить домашнее задание"/>
-                    								<tool:MenuItem Header="Добавить контрольную"/>
-                    								<tool:MenuItem Header="Изменить аудиторию"/>
-                    								<tool:MenuItem Header="Перенести пару"/>
-                    								<tool:MenuItem Header="Отменить пару"/>                                                
+                    								<tool:MenuItem Header="Добавить домашнее задание" Tag="{Binding time}" Click="addHomeworkClick" />
+                                                    <tool:MenuItem Header="Добавить контрольную" Tag="{Binding time}" Click="addControlClick"/>
+                                                    <tool:MenuItem Header="Изменить аудиторию" Tag="{Binding time}" Click="changePlaceClick"/>
+                                                    <tool:MenuItem Header="Перенести пару" Tag="{Binding time}" Click="transferLessonClick"/>
+                                                    <tool:MenuItem Header="Отменить пару" Tag="{Binding time}" Click="canceledLessonClick"/>                                                
                     							</tool:ContextMenu>
                     						</tool:ContextMenuService.ContextMenu>
                     						<TextBlock Text="{Binding time}" FontSize="32" Foreground="{StaticResource PhoneAccentBrush}" Padding="10 10 0 0"/>
@@ -60,6 +75,8 @@
                     							<TextBlock Text=" / " FontSize="24" Foreground="#666666"/>
                     							<TextBlock Text="{Binding teacher}" FontSize="24"/>                                                  
                     						</StackPanel>
+                                            <TextBlock Text="КОНТРОЛЬНАЯ РАБОТА" Foreground="{StaticResource PhoneAccentBrush}" FontSize="26" Padding="10 0" Visibility="{Binding control_visible}"></TextBlock>
+                                            <TextBlock Text="{Binding control}" Padding="10 0" Visibility="{Binding control_visible}"></TextBlock>
                                             <TextBlock Text="ДОМАШНЕЕ ЗАДАНИЕ" Foreground="{StaticResource PhoneAccentBrush}" FontSize="26" Padding="10 0" Visibility="{Binding homework_visible}"></TextBlock>
                                             <TextBlock Text="{Binding homework}" Padding="10 0" Visibility="{Binding homework_visible}"></TextBlock>
                                         </StackPanel>

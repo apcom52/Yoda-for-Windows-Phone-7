@@ -36,7 +36,8 @@
             		<tool:ListPickerItem Content="Вторая подгруппа"/>
             	</tool:ListPicker>
             	<tool:ToggleSwitch Header="Показывать уведомления" IsChecked="True" Margin="0,5,0,0"/>
-            	<CheckBox Content="Скрывать отмененные пары" Height="75" Margin="0,0,-10,0"/>
+            	<CheckBox x:Name="settingsHide" Content="Скрывать отмененные пары" Height="75" Margin="0,0,-10,0" Click="hideLessonsClick"/>
+            	<CheckBox x:Name="settingsHide_Copy" Content="Отмечать прошедшие пары" Height="75" Margin="0,0,-10,0" Click="hideLessonsClick"/>
             </StackPanel>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="О приложении" VerticalAlignment="Top" FontSize="24">
             	<TextBlock.Foreground>
@@ -54,7 +55,7 @@
             		<TextBlock TextWrapping="Wrap" Text="Версия: 1.0" HorizontalAlignment="Right" Width="364"/>
             	</StackPanel>
             </StackPanel>
-            <HyperlinkButton Content="Исходный код" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <HyperlinkButton x:Name="showSources" Content="Исходный код" HorizontalAlignment="Left" VerticalAlignment="Top" Click="onShowSources"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->

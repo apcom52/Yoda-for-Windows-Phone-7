@@ -31,5 +31,7 @@ namespace Yoda {
         public string color { get; set; }
         public string canceled_visible { get; set; }
         public string homework_visible { get; set; }
+        public string control_visible { get; set; }
+        public string is_hiding { get; set; }
     }
 }

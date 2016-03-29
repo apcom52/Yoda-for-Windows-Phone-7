@@ -21,14 +21,12 @@ namespace Yoda
     {
         DateTime targetDay = DateTime.Now;
         DatePickerCustom datePicker;
-        List<LessonItem> dayTimetable;
         IsolatedStorageSettings settings;
         const string GROUP = "GROUP";
+        const string HIDE_CANCELED = "HIDE_CANCELED";
 
-        // Конструктор
         public MainPage()
         {
-            System.Diagnostics.Debug.WriteLine("Yay!");
             InitializeComponent();
             updateDateLabel(targetDay);
 
@@ -37,8 +35,14 @@ namespace Yoda
                 settings.Add(GROUP, 1);
                 settings.Save();
             }
+            if (!settings.Contains(HIDE_CANCELED)) {
+                settings.Add(HIDE_CANCELED, false);
+                settings.Save();
+            }
 
             Loaded += new RoutedEventHandler(MainPage_Loaded);
+
+            loadDayTimetable(targetDay);
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e) {
@@ -50,12 +54,10 @@ namespace Yoda
                 this.datePicker.ValueChanged += new EventHandler<DateTimeValueChangedEventArgs>(datePicker_ValueChanged);
 
                 LayoutRoot.Children.Add(this.datePicker);
-
             }
         }
 
         private void datePicker_ValueChanged(object sender, DateTimeValueChangedEventArgs e) {
-            //PageTitle.Text = this.datePicker.ValueString;
             targetDay = (DateTime)e.NewDateTime;
             updateDateLabel(targetDay);
             loadDayTimetable(targetDay);
@@ -63,8 +65,6 @@ namespace Yoda
 
         private void clickPrevDay(object sender, System.EventArgs e)
         {
-        	// TODO: Add event handler implementation here.
-            //dayViewLabel.Text = "Previous";
             targetDay = targetDay.AddDays(-1);
             updateDateLabel(targetDay);
             loadDayTimetable(targetDay);
@@ -77,19 +77,19 @@ namespace Yoda
 
         private void clickNextDay(object sender, System.EventArgs e)
         {
-        	// TODO: Add event handler implementation here.
-			//dayViewLabel.Text = "Next";
             targetDay = targetDay.AddDays(1);
             updateDateLabel(targetDay);
-            Console.Write(targetDay);
-            System.Diagnostics.Debug.WriteLine(targetDay);
+            loadDayTimetable(targetDay);
+        }
+
+        private void onRefreshButton(object sender, System.EventArgs e) {
+            updateDateLabel(targetDay);
             loadDayTimetable(targetDay);
         }
 
         private void updateDateLabel(DateTime date)
         {
             dayTab.Header = date.ToString("D");
-            //dayViewLabel.Text = date.ToString("D");
         }
 
         private String parseDate(DateTime date) {
@@ -113,6 +113,7 @@ namespace Yoda
         
         private void loadDayTimetable(DateTime date)
         {
+            indicator.IsIndeterminate = true;
             String getDate = parseDate(date);
             String url = "http://vsu-it.ru/api/timetable?day=" + getDate + "&group=" + settings[GROUP].ToString();
             System.Diagnostics.Debug.WriteLine(url);
@@ -125,7 +126,6 @@ namespace Yoda
 
         private void webClientFinished(object sender, DownloadStringCompletedEventArgs e) {
             if (e.Error == null) {
-                List<LessonItem> lessons = new List<LessonItem>();
                 DayTimetableList.Items.Clear();
 
                 string jsonArrayAsString = e.Result;
@@ -135,7 +135,6 @@ namespace Yoda
 
                 while (jsonArray_Item != null) {                    
                     LessonItem item = JsonConvert.DeserializeObject<LessonItem>(jsonArray_Item.ToString());
-                    System.Diagnostics.Debug.WriteLine(item.title);
                     switch (item.type_css) {
                         case "lection":
                             item.color = "#DFEF75";
@@ -148,29 +147,44 @@ namespace Yoda
                             break;
                     }
 
-                    if (item.is_canceled) {
+                    /* Если пара отменена, то показываем соответствующую надпись
+                     * Если в настройках указано, что пара скрывается, то присваиваем параметру "is_hiding" соответствующее значение 
+                     * */
+                    if (item.is_canceled)
                         item.canceled_visible = "Visible";
-                    }
-                    else {
+                    else
                         item.canceled_visible = "Collapsed";
-                    }
 
-                    if (item.homework != null) {
-                        item.homework_visible = "Visible";
-                    }
-                    else {
+                    /* Показываем домашние задания */
+                    if (item.homework != null)
+                        item.homework_visible = "Visible";                    
+                    else
                         item.homework_visible = "Collapsed";
-                    }
 
-                    DayTimetableList.Items.Add(item);
+                    /* Показываем контрольные работы */
+                    if (item.control != null)
+                        item.control_visible = "Visible";
+                    else
+                        item.control_visible = "Collapsed";
+
+                    if (!((bool)settings[HIDE_CANCELED] && item.is_canceled))
+                        DayTimetableList.Items.Add(item);
 
                     jsonArray_Item = jsonArray_Item.Next;
                     i++;
                 }
+
+                /* Если число пар равно нулю, то значит это выходной день */
+                if (i > 0)
+                    holiday.Visibility = System.Windows.Visibility.Collapsed;
+                else
+                    holiday.Visibility = System.Windows.Visibility.Visible;
             }
             else {
                 MessageBox.Show(e.Error.Message);
             }
+
+            indicator.IsIndeterminate = false;
         }
 
         private void showSettings(object sender, System.EventArgs e)
@@ -184,5 +198,69 @@ namespace Yoda
             task.URL = "http://www.vsu-it.ru";
             task.Show();
         }
+
+        private void clickHolidayNextDay(object sender, System.Windows.RoutedEventArgs e)
+        {
+            targetDay = targetDay.AddDays(1);
+            updateDateLabel(targetDay);
+            loadDayTimetable(targetDay);
+        }
+
+        private void addHomeworkClick(object sender, RoutedEventArgs e) {            
+            var current = (MenuItem) sender;
+            int time = getLessonTime(current.Tag.ToString());
+            if (time == 0) {
+                MessageBox.Show("Возникла ошибка");
+                return;
+            }
+            NavigationService.Navigate(new Uri("/AddHomework.xaml?time=" + time.ToString() + "&date=" + targetDay.ToString("dd.MM.yyyy"), UriKind.Relative));
+        }
+
+        private int getLessonTime(string time) {
+            switch (time) {
+                case "8:20":
+                    return 1;
+                    break;
+                case "10:00":
+                    return 2;
+                    break;
+                case "11:45":
+                    return 3;
+                    break;
+                case "14:00":
+                    return 4;
+                    break;
+                case "15:45":
+                    return 5;
+                    break;
+                case "17:20":
+                    return 6;
+                    break;
+                case "18:55":
+                    return 7;
+                    break;
+                default:
+                    return 0;
+                    break;
+            }
+        }
+
+        private void addControlClick(object sender, RoutedEventArgs e) {
+            NavigationService.Navigate(new Uri("/AddControl.xaml", UriKind.Relative));
+        }
+
+        private void changePlaceClick(object sender, RoutedEventArgs e) {
+            NavigationService.Navigate(new Uri("/ChangePlace.xaml", UriKind.Relative));
+        }
+
+        private void transferLessonClick(object sender, RoutedEventArgs e) {
+            NavigationService.Navigate(new Uri("/TransferLesson.xaml", UriKind.Relative));
+        }
+
+        private void canceledLessonClick(object sender, RoutedEventArgs e) {
+            //f
+        }
+
+        
     }
 }

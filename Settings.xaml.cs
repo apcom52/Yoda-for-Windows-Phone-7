@@ -8,6 +8,7 @@ using System.Windows.Navigation;
 using System.IO.IsolatedStorage;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Microsoft.Phone.Tasks;
 
 namespace Yoda
 {
@@ -15,6 +16,7 @@ namespace Yoda
     {
         IsolatedStorageSettings settings;
         const string GROUP = "GROUP";
+        const string HIDE_CANCELED = "HIDE_CANCELED";
 
         public Settings()
         {
@@ -23,9 +25,14 @@ namespace Yoda
                 settings.Add(GROUP, 1);
                 settings.Save();
             }
+            if (!settings.Contains(HIDE_CANCELED)) {
+                settings.Add(HIDE_CANCELED, false);
+                settings.Save();
+            }
 
             InitializeComponent(); 
             settingsGroup.SelectedIndex = (int)settings[GROUP] - 1;
+            settingsHide.IsChecked = (bool)settings[HIDE_CANCELED];
         }
 
         private void onChangeGroup(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -38,7 +45,20 @@ namespace Yoda
         	var picker = sender as ListPicker;
             settings[GROUP] = picker.SelectedIndex + 1;
             settings.Save();
-            System.Diagnostics.Debug.WriteLine("Save: " + settings[GROUP].ToString());
+        }
+
+        private void onShowSources(object sender, System.Windows.RoutedEventArgs e)
+        {
+            WebBrowserTask task = new WebBrowserTask();
+            task.URL = "https://github.com/apcom52/Yoda-for-Windows-Phone-7";
+            task.Show();
+        }
+
+        private void hideLessonsClick(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var checkbox = sender as CheckBox;
+            settings[HIDE_CANCELED] = checkbox.IsChecked;
+            settings.Save();
         }
     }
 }
